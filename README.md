@@ -4,7 +4,6 @@ The tool infers the ancestral germline BCR, traces somatic hypermutation (SHM) e
 B cell lineage tracing is a tool for understanding how the immune system builds and refines antibody responses. By capturing the order and location of these mutations, we can get insights into the selection shaping BCR evolution and antibody creation.
 
 ~The tool can be used in two ways: via a graphical user interface (GUI) for interactive exploration, or via the command line for scripted and batch workflows.~
-Given paired heavy and light chain VDJ sequences, t
 
 
 ## Background: ##
@@ -37,13 +36,15 @@ As part of this process, the cells accumulate somatic hypermutations (SHM) in th
 | `VDJ_sequence_L` | Light chain VDJ nucleotide sequence |
 | `VDJ_aa_sequence_H` | Heavy chain VDJ amino acid sequence |
 | `VDJ_aa_sequence_L` | Light chain VDJ amino acid sequence |
-| `v_call_h` | Heavy chain V gene call (e.g. `IGHV3-23*01`) |
+| `v_call_h` | Heavy chain V gene call |
 | `d_call_h` | Heavy chain D gene call |
 | `j_call_h` | Heavy chain J gene call |
 | `v_call_l` | Light chain V gene call |
 | `j_call_l` | Light chain J gene call |
 | `mu_count_h` | Somatic hypermutation count, heavy chain |
 | `mu_count_l` | Somatic hypermutation count, light chain |
-| `cluster_annotated` | Cell type annotation (e.g. PC, MBC, GC_Cycling) |
-| `c_call` | Isotype (e.g. IGHG1, IGHG2) |
+| `cluster_annotated` | Cell type annotation |
+| `c_call` | Isotype |
 | `sample_id` | Sample / timepoint identifier |
+
+* I decided to start with processed files rather than raw data because raw scBCR‑seq output typically comes in complex bioinformatics formats, and handling it can easily become a full project on its own. For this project, I prefer to focus on a less explored biological insights rather than reconstructing known piplens that are very common.
