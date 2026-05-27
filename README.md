@@ -53,8 +53,8 @@ The required columns will be:
 
 | Output | Format | Description |
 |---|---|---|
-| Lineage tree | PNG/JPG | Phylogenetic tree with nodes colored by cell type, edges annotated with mutations |
-| Mutation table | xlsx/CSV | Per-branch list of nucleotide and amino acid changes |
+| Lineage tree | PNG/JPG | Phylogenetic tree with nodes colored by cell type or isotype and edges or notes to sign mutations |
+| Mutation table | xlsx/CSV | List of nucleotide and amino acid changes |
 
 Example of the tree structure:
 
