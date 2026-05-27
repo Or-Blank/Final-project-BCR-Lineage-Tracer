@@ -23,9 +23,10 @@ As part of this process, the cells accumulate somatic hypermutations (SHM) in th
   -**Disease & Vaccine Research:** Analyzing tree shapes reveals whether an immune response is generating new, evolving antibodies or just re-stimulating older, less effective memory cells.
   
 
-  ## The tool: ##
-  The tool will take an **input of tabular data in .xlsx /.csv /.tsv**  with one row per cell.
-  The required columns will be:
+## The tool: ##
+### Input:
+The tool will take an **input of tabular data in .xlsx /.csv /.tsv**  with one row per cell.
+The required columns will be:
 
 | Column | Description |
 |---|---|
@@ -48,3 +49,23 @@ As part of this process, the cells accumulate somatic hypermutations (SHM) in th
 | `sample_id` | Sample / timepoint identifier |
 
 * I decided to start with processed files rather than raw data because raw scBCR‑seq output typically comes in complex bioinformatics formats, and handling it can easily become a full project on its own. For this project, I prefer to focus on a less explored biological insights rather than reconstructing known piplens that are very common.
+
+### Output:
+**The final output will be a structured folder with the image of the tree and table files.**
+
+| Output | Format | Description |
+|---|---|---|
+| Lineage tree (per clone) | TBD (PNG / SVG / interactive HTML) | Phylogenetic tree with nodes colored by cell type, edges annotated with mutations |
+| Mutation table | CSV | Per-branch list of nucleotide and amino acid changes |
+| Clone summary | CSV | Per-clone statistics: size, mean SHM, isotype distribution, timepoint spread |
+| Tree object | Newick `.nwk` | Machine-readable tree format for downstream analysis |
+
+Example tree structure:
+[ADD PICTURE]
+
+
+
+
+
+
+
