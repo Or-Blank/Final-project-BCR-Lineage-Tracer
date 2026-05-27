@@ -74,6 +74,7 @@ As for now, the requirements.txt will include:
 
 To run the project:
 pip install requirements.txt
+
 run the requested file (tests or the project itseld) - names will be determined later.
 
 
