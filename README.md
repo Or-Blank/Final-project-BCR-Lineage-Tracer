@@ -77,7 +77,8 @@ To run the project:
 
 pip install requirements.txt
 
-run the requested file (tests or the project itseld) - names will be determined later.\
+run the requested file (tests or the project itseld) - names will be determined later.
+<br><br>
 **Note:** This project is part of the Python Programming Course at the Weizmann Institute of Science.
 
 You can view the course repository here: https://github.com/Code-Maven/wis-python-course-2026-03
