@@ -6,6 +6,7 @@ B cell lineage tracing is a tool for understanding how the immune system builds 
 ~The tool can be used in two ways: via a graphical user interface (GUI) for interactive exploration, or via the command line for scripted and batch workflows.~
 Given paired heavy and light chain VDJ sequences, t
 
+
 ## Background: ##
 * During an immune response, B cells in our body undergo clonal expansion and affinity maturation in order to produce a large pool of high‑affinity, antigen‑specific antibodies that can neutralize the pathogens more effectively.
 As part of this process, the cells accumulate somatic hypermutations (SHM) in their BCR sequences, specifically in the V(D)J region, to improve the antigen.
@@ -21,3 +22,9 @@ As part of this process, the cells accumulate somatic hypermutations (SHM) in th
   -**Therapeutic Antibody Discovery:** We can use the trees to trace mutated B cell sequences backwards, identifying the most potent, broadly neutralizing antibodies to isolate for therapeutic use.
 
   -**Disease & Vaccine Research:** Analyzing tree shapes reveals whether an immune response is generating new, evolving antibodies or just re-stimulating older, less effective memory cells.
+  
+
+  ## The tool: ##
+  The tool will take an **input of tabular data in .xlsx /.csv /.tsv**  with one row per cell.
+
+  ColumnDescriptioncell_idUnique cell barcodeclone_idClone group identifierclone_countNumber of cells in this cloneVDJ_sequence_HHeavy chain VDJ nucleotide sequenceVDJ_sequence_LLight chain VDJ nucleotide sequenceVDJ_aa_sequence_HHeavy chain VDJ amino acid sequenceVDJ_aa_sequence_LLight chain VDJ amino acid sequencev_call_hHeavy chain V gene call (e.g. IGHV3-23*01)d_call_hHeavy chain D gene callj_call_hHeavy chain J gene callv_call_lLight chain V gene callj_call_lLight chain J gene callmu_count_hSomatic hypermutation count, heavy chainmu_count_lSomatic hypermutation count, light chaincluster_annotatedCell type annotation (e.g. PC, MBC, GC_Cycling)c_callIsotype (e.g. IGHG1, IGHG2)sample_idSample / timepoint identifier
