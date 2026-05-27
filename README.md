@@ -57,6 +57,7 @@ The required columns will be:
 | Mutation table | xlsx/CSV | Per-branch list of nucleotide and amino acid changes |
 
 Example of the tree structure:
+
 <img width="718" height="865" alt="image" src="https://github.com/user-attachments/assets/6c31dab3-45fd-484e-a451-2e925b242c6f" />
 
 
