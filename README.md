@@ -2,7 +2,8 @@
 In this project, I intend to create a Python tool for making B cell receptor (BCR) clonal lineage trees from single-cell sequencing data.
 The tool infers the ancestral germline BCR, traces somatic hypermutation (SHM) events across cells, and outputs an annotated phylogenetic tree showing how B cell clones evolved and expanded.
 B cell lineage tracing is a tool for understanding how the immune system builds and refines antibody responses. By capturing the order and location of these mutations, we can get insights into the selection shaping BCR evolution and antibody creation.
-\
+
+
 ## Background: ##
 * During an immune response, B cells in our body undergo clonal expansion and affinity maturation in order to produce a large pool of high‑affinity, antigen‑specific antibodies that can neutralize the pathogens more effectively.
 As part of this process, the cells accumulate somatic hypermutations (SHM) in their BCR sequences, specifically in the V(D)J region, to improve the antigen.
@@ -19,9 +20,6 @@ As part of this process, the cells accumulate somatic hypermutations (SHM) in th
 
   -**Disease & Vaccine Research:** Analyzing tree shapes reveals whether an immune response is generating new, evolving antibodies or just re-stimulating older, less effective memory cells.
 
-
-
-  
 
 ## The tool: ##
 ### Input:
@@ -65,9 +63,6 @@ Example table:
 [ADD PICTURE]
 
 
-
-
-
 ## The technicalities: ##
 As for now, the requirements.txt will include:
 pandas
@@ -79,7 +74,12 @@ scipy
 numpy
 tkinter (for GUI )
 
+To run the project:
+pip install requirements.txt
+run the requested file (tests or the project itseld) - names will be determined later.
 
+
+Note: This project is part of the Python Programming Course at the Weizmann institute of science. You can view the course here https://github.com/Code-Maven/wis-python-course-2026-03
 
 
 
