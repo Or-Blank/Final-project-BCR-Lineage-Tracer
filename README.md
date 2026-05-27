@@ -55,13 +55,26 @@ The required columns will be:
 
 | Output | Format | Description |
 |---|---|---|
-| Lineage tree (per clone) | TBD (PNG / SVG / interactive HTML) | Phylogenetic tree with nodes colored by cell type, edges annotated with mutations |
+| Lineage tree | PNG/JPG | Phylogenetic tree with nodes colored by cell type, edges annotated with mutations |
 | Mutation table | CSV | Per-branch list of nucleotide and amino acid changes |
-| Clone summary | CSV | Per-clone statistics: size, mean SHM, isotype distribution, timepoint spread |
-| Tree object | Newick `.nwk` | Machine-readable tree format for downstream analysis |
 
 Example tree structure:
 [ADD PICTURE]
+
+Example table:
+[ADD PICTURE]
+
+
+## The technicalities: ##
+As for now, the requirements.txt will include:
+pandas
+openpyxl
+biopython
+ete3
+matplotlib
+scipy
+numpy
+tkinter (for GUI )
 
 
 
