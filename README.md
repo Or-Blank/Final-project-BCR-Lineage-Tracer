@@ -63,14 +63,14 @@ Example of the tree structure:
 
 ## The technicalities: ##
 As for now, the requirements.txt will include:
--pandas
-*openpyxl
-*biopython
-*ete3
-*matplotlib
-*scipy
-*numpy
-*tkinter (for GUI )
+* pandas
+* openpyxl
+* biopython
+* ete3
+* matplotlib
+* scipy
+* numpy
+* tkinter (for GUI )
 
 To run the project:
 pip install requirements.txt
