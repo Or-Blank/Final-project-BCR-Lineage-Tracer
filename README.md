@@ -7,11 +7,12 @@ B cell lineage tracing is a tool for understanding how the immune system builds 
 Given paired heavy and light chain VDJ sequences, t
 
 ## Background: ##
-*During an immune response, B cells in our body undergo clonal expansion and affinity maturation in order to produce a large pool of high‑affinity, antigen‑specific antibodies that can neutralize the pathogens more effectively.
+* During an immune response, B cells in our body undergo clonal expansion and affinity maturation in order to produce a large pool of high‑affinity, antigen‑specific antibodies that can neutralize the pathogens more effectively.
 As part of this process, the cells accumulate somatic hypermutations (SHM) in their BCR sequences to improve the antigen.
 
-*B cell lineage trees map the evolutionary "family history" of B cell clones as they mutate and divide during an immune response - all originated from one B cell.
-*The trees are essential for couple of reasons:
+* B cell lineage trees map the evolutionary "family history" of B cell clones as they mutate and divide during an immune response - all originated from one B cell.
+  
+* The trees are essential for couple of reasons:
 
 -**Tracking Affinity Maturation:** Trees illustrate how B cells repeatedly mutate and select for stronger, more precise antibody binding against specific pathogens.
 
