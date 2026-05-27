@@ -26,5 +26,24 @@ As part of this process, the cells accumulate somatic hypermutations (SHM) in th
 
   ## The tool: ##
   The tool will take an **input of tabular data in .xlsx /.csv /.tsv**  with one row per cell.
+  The required columns will be:
 
-  ColumnDescriptioncell_idUnique cell barcodeclone_idClone group identifierclone_countNumber of cells in this cloneVDJ_sequence_HHeavy chain VDJ nucleotide sequenceVDJ_sequence_LLight chain VDJ nucleotide sequenceVDJ_aa_sequence_HHeavy chain VDJ amino acid sequenceVDJ_aa_sequence_LLight chain VDJ amino acid sequencev_call_hHeavy chain V gene call (e.g. IGHV3-23*01)d_call_hHeavy chain D gene callj_call_hHeavy chain J gene callv_call_lLight chain V gene callj_call_lLight chain J gene callmu_count_hSomatic hypermutation count, heavy chainmu_count_lSomatic hypermutation count, light chaincluster_annotatedCell type annotation (e.g. PC, MBC, GC_Cycling)c_callIsotype (e.g. IGHG1, IGHG2)sample_idSample / timepoint identifier
+| Column | Description |
+|---|---|
+| `cell_id` | Unique cell barcode |
+| `clone_id` | Clone group identifier |
+| `clone_count` | Number of cells in this clone |
+| `VDJ_sequence_H` | Heavy chain VDJ nucleotide sequence |
+| `VDJ_sequence_L` | Light chain VDJ nucleotide sequence |
+| `VDJ_aa_sequence_H` | Heavy chain VDJ amino acid sequence |
+| `VDJ_aa_sequence_L` | Light chain VDJ amino acid sequence |
+| `v_call_h` | Heavy chain V gene call (e.g. `IGHV3-23*01`) |
+| `d_call_h` | Heavy chain D gene call |
+| `j_call_h` | Heavy chain J gene call |
+| `v_call_l` | Light chain V gene call |
+| `j_call_l` | Light chain J gene call |
+| `mu_count_h` | Somatic hypermutation count, heavy chain |
+| `mu_count_l` | Somatic hypermutation count, light chain |
+| `cluster_annotated` | Cell type annotation (e.g. PC, MBC, GC_Cycling) |
+| `c_call` | Isotype (e.g. IGHG1, IGHG2) |
+| `sample_id` | Sample / timepoint identifier |
