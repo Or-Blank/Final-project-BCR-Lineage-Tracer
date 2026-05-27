@@ -58,7 +58,8 @@ The required columns will be:
 
 Example of the tree structure:
 
-<img width="718" height="865" alt="image" src="https://github.com/user-attachments/assets/6c31dab3-45fd-484e-a451-2e925b242c6f" />
+<img width="740" height="685" alt="image" src="https://github.com/user-attachments/assets/d4b1a737-2bae-4780-a146-50c808661c7d" />
+
 
 
 ## The technicalities: ##
