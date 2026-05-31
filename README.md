@@ -73,11 +73,31 @@ As for now, the requirements.txt will include:
 * numpy
 * tkinter (for GUI )
 
-To run the project:
+## Installation & Running the Project
 
-pip install requirements.txt
+**Requirements:** Python 3.9+
 
-Run the requested file (tests or the project itself) - names will be determined later.
+### 1. Install dependencies
+
+pip install -r requirements.txt
+
+### 2. Run the project
+
+**Option A — Graphical Interface (recommended):**
+
+python gui.py
+
+This opens a window where you can upload your `.xlsx` / `.csv` / `.tsv` file,
+select the clone to analyze, and view or export the results.
+
+**Option B — Command Line:**
+
+python run_lineage.py - input your_file.xlsx
+
+### 3. Run the tests
+
+pytest tests/
+
 
 ### Notes:
 This project is part of the Python Programming Course at the Weizmann Institute of Science.
