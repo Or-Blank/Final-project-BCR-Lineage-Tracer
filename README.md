@@ -73,7 +73,7 @@ As for now, the requirements.txt will include:
 * numpy
 * tkinter (for GUI )
 
-## Installation & Running the Project
+## Installation and running the project
 
 **Requirements:** Python 3.9+
 
