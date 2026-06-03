@@ -161,7 +161,7 @@ class App(tk.Tk):
     def _populate_clones(self):
         if self.df is None:
             return
-        clones_df = list_clones(self.df, min_cells=1)
+        clones_df = list_clones(self.df, min_cells=2)
         self.clone_list = clones_df["clone_id"].tolist()
         self.clone_combo["values"] = self.clone_list
         self.clone_combo.config(state="readonly")

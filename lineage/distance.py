@@ -30,10 +30,12 @@ def hamming(seq_a: str, seq_b: str) -> int:
 def combined_distance(row_a: dict, row_b: dict) -> float:
     """
     Combined distance = Hamming(H nucleotide) + Hamming(L nucleotide).
-    Using nucleotide sequences gives higher resolution than amino acid.
+    If L chain sequences are absent (heavy-only files), distance is H only.
     """
-    d_h = hamming(row_a["VDJ_sequence_H"], row_b["VDJ_sequence_H"])
-    d_l = hamming(row_a["VDJ_sequence_L"], row_b["VDJ_sequence_L"])
+    d_h = hamming(str(row_a["VDJ_sequence_H"]), str(row_b["VDJ_sequence_H"]))
+    seq_l_a = str(row_a.get("VDJ_sequence_L", "") or "")
+    seq_l_b = str(row_b.get("VDJ_sequence_L", "") or "")
+    d_l = hamming(seq_l_a, seq_l_b) if seq_l_a and seq_l_b else 0
     return float(d_h + d_l)
 
 

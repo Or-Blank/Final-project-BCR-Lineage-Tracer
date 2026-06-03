@@ -51,8 +51,12 @@ def _validate_columns(df: pd.DataFrame, path: str):
 
 def _clean(df: pd.DataFrame) -> pd.DataFrame:
     """Drop rows with missing sequence data and normalise types."""
-    df = df.dropna(subset=["VDJ_sequence_H", "VDJ_sequence_L",
-                            "VDJ_aa_sequence_H", "VDJ_aa_sequence_L"])
+    # Only require heavy chain sequence — light chain may be absent (heavy-only files)
+    df = df.dropna(subset=["VDJ_sequence_H"])
+    df["VDJ_sequence_H"]    = df["VDJ_sequence_H"].fillna("").astype(str)
+    df["VDJ_sequence_L"]    = df["VDJ_sequence_L"].fillna("").astype(str)
+    df["VDJ_aa_sequence_H"] = df["VDJ_aa_sequence_H"].fillna("").astype(str)
+    df["VDJ_aa_sequence_L"] = df["VDJ_aa_sequence_L"].fillna("").astype(str)
     df["mu_count_h"] = pd.to_numeric(df["mu_count_h"], errors="coerce").fillna(0).astype(int)
     df["mu_count_l"] = pd.to_numeric(df["mu_count_l"], errors="coerce").fillna(0).astype(int)
     df["clone_count"] = pd.to_numeric(df["clone_count"], errors="coerce").fillna(1).astype(int)
@@ -91,5 +95,9 @@ def get_clone(df: pd.DataFrame, clone_id: str) -> pd.DataFrame:
 
 
 def get_largest_clone(df: pd.DataFrame) -> str:
-    """Return the clone_id of the clone with the most cells."""
-    return df.groupby("clone_id")["cell_id"].count().idxmax()
+    """Return the clone_id of the clone with the most cells (minimum 2)."""
+    counts = df.groupby("clone_id")["cell_id"].count()
+    counts = counts[counts >= 2]
+    if counts.empty:
+        raise ValueError("No clones with 2 or more cells found in the data.")
+    return counts.idxmax()

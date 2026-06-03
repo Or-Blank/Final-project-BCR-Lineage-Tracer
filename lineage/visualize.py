@@ -175,7 +175,7 @@ def render_tree(root: TreeNode, output_path: str, clone_id: str = ""):
         "L:XnY  mutation in Light chain",
         "  X = original AA,  n = position",
         "  Y = new AA",
-        "SHM Somatic Hypermutation Mutations count",
+        "SHM  somatic hypermutation count",
     ]
     notation_text = "\n".join(notation_lines)
 
