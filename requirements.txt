@@ -1,0 +1,8 @@
+pandas
+openpyxl
+biopython
+matplotlib
+scipy
+numpy
+Pillow
+pytest
