@@ -153,6 +153,8 @@ def render_tree(root: TreeNode, output_path: str, clone_id: str = ""):
     fig_w = max(14, (max(x for x, y in positions.values()) + 2) * 3.2)
     fig_h = max(6,  n_leaves * 0.62)
     fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+    ax.set_aspect("equal", adjustable="datalim")
+
 
     _draw_tree(ax, root, positions, color_map)
 
