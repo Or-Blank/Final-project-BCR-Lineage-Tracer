@@ -1,7 +1,11 @@
 import numpy as np
 import pandas as pd
 from lineage.distance import build_distance_matrix
-from lineage.mutations import get_branch_mutations, mutations_to_records, mutations_to_label
+from lineage.mutations import (
+    get_branch_mutations,
+    mutations_to_records,
+    mutations_to_label,
+)
 
 
 class TreeNode:
@@ -22,107 +26,151 @@ def build_tree(clone_df: pd.DataFrame, germline: dict):
     rows = [germline] + clone_df.to_dict(orient="records")
 
     matrix, cell_ids = build_distance_matrix(rows)
-    id_to_row = {r["cell_id"]: r for r in rows}
 
-    # Build NJ tree
-    root = neighbor_joining(matrix, cell_ids, id_to_row)
+    row_map = {r["cell_id"]: r for r in rows}
 
-    # Collect mutation records
+    # Convert matrix to dict-of-dicts keyed by cell_id
+    D = {
+        cid_i: {cid_j: float(matrix[i, j]) for j, cid_j in enumerate(cell_ids)}
+        for i, cid_i in enumerate(cell_ids)
+    }
+
+    root = neighbor_joining(D, row_map)
+
     all_mutations = []
     _collect_mutations(root, all_mutations)
 
-    # Return all nodes
     all_nodes = _gather_nodes(root)
+
     return root, all_nodes, all_mutations
 
 
-def neighbor_joining(D, labels, row_map):
+def _synthetic_sequence(seq1, seq2):
     """
-    Classic Neighbor-Joining implementation.
-    D: distance matrix
-    labels: list of node IDs
-    row_map: mapping from node ID to cell data
+    Build a synthetic ancestor sequence by taking consensus of two sequences.
     """
-    D = D.astype(float)
-    nodes = {lab: TreeNode(lab, row_map[lab]) for lab in labels}
+    if seq1 is None or seq2 is None:
+        return seq1 or seq2
 
-    while len(labels) > 2:
+    out = []
+    for a, b in zip(seq1, seq2):
+        out.append(a if a == b else a)
+    return "".join(out)
+
+
+def neighbor_joining(D, row_map):
+    """
+    Neighbor-Joining using dict-of-dicts keyed by cell_id.
+    D: {label: {label: distance}}
+    """
+    nodes = {lab: TreeNode(lab, row_map[lab]) for lab in D.keys()}
+
+    while len(D) > 2:
+        labels = list(D.keys())
         n = len(labels)
-        total_dist = {i: np.sum(D[i]) for i in range(n)}
 
-        # Build Q-matrix
-        Q = np.zeros_like(D)
-        for i in range(n):
-            for j in range(n):
-                if i != j:
-                    Q[i, j] = (n - 2) * D[i, j] - total_dist[i] - total_dist[j]
+        # Total distances
+        total = {i: sum(D[i][j] for j in labels if j != i) for i in labels}
 
-        # Find minimum Q
-        i, j = np.unravel_index(np.argmin(Q), Q.shape)
-        if i == j:
-            break
+        # Q-matrix
+        Q = {}
+        for i in labels:
+            Q[i] = {}
+            for j in labels:
+                if i == j:
+                    Q[i][j] = np.inf
+                else:
+                    Q[i][j] = (n - 2) * D[i][j] - total[i] - total[j]
 
-        li, lj = labels[i], labels[j]
+        # Find pair with minimum Q
+        i, j = min(
+            ((a, b) for a in labels for b in labels if a != b),
+            key=lambda x: Q[x[0]][x[1]],
+        )
 
-        # Create new internal node
+        # New internal node label
         new_label = f"NJ_internal_{len(nodes)}"
-        new_node = TreeNode(new_label, {"cell_id": new_label})
+
+        # Synthetic ancestor sequence
+        seq_i = row_map[i].get("VDJ_sequence_H", "")
+        seq_j = row_map[j].get("VDJ_sequence_H", "")
+        syn_seq = _synthetic_sequence(seq_i, seq_j)
+
+        row_map[new_label] = {
+            "cell_id": new_label,
+            "cell_type": "internal",
+            # synthetic sequences
+            "VDJ_sequence_H": syn_seq,
+            "VDJ_sequence_L": "",
+            "VDJ_aa_sequence_H": "",
+            "VDJ_aa_sequence_L": "",
+
+            # internal nodes have no SHM
+            "mu_count_h": 0,
+            "mu_count_l": 0,
+
+            # internal nodes have no isotype / organ
+            "isotype": None,
+            "organ": None,
+            "duplicate_count": 1,
+            }
+
+        new_node = TreeNode(new_label, row_map[new_label])
         nodes[new_label] = new_node
 
-        # Attach children
-        muts_i = get_branch_mutations(row_map[li], row_map[lj])
-        muts_j = get_branch_mutations(row_map[lj], row_map[li])
+        # Attach children (parent = new internal node)
+        muts_i = get_branch_mutations(row_map[new_label], row_map[i])
+        muts_j = get_branch_mutations(row_map[new_label], row_map[j])
 
-        new_node.children.append((nodes[li], muts_i))
+        new_node.children.append((nodes[i], muts_i))
         new_node.children.append((nodes[j], muts_j))
-        nodes[li].parent = new_node
+        nodes[i].parent = new_node
         nodes[j].parent = new_node
 
-        # Compute distances to new node
-        new_row = []
-        for k in range(n):
-            if k != i and k != j:
-                d = (D[i, k] + D[j, k] - D[i, j]) / 2
-                new_row.append(d)
+        # Compute distances from new node to others
+        labels_wo_ij = [k for k in labels if k not in (i, j)]
+        D_new = {}
+        for k in labels_wo_ij:
+            D_new[k] = (D[i][k] + D[j][k] - D[i][j]) / 2.0
 
-        # Build new matrix
-        new_D = np.zeros((n - 1, n - 1))
-        new_labels = [lab for idx, lab in enumerate(labels) if idx not in (i, j)]
-        new_labels.append(new_label)
+        # Build new distance matrix D2 from old D (no new_label yet)
+        D2 = {}
+        for k in labels_wo_ij:
+            D2[k] = {}
+            for kk in labels_wo_ij:
+                D2[k][kk] = D[k][kk]
 
-        # Fill matrix
-        idx_map = {lab: idx for idx, lab in enumerate(new_labels)}
+        # Add new_label row/col
+        D2[new_label] = {}
+        for k in labels_wo_ij:
+            D2[new_label][k] = D_new[k]
+            D2[k][new_label] = D_new[k]
+        D2[new_label][new_label] = 0.0
 
-        for a in range(n - 1):
-            for b in range(n - 1):
-                if new_labels[a] == new_label:
-                    if new_labels[b] == new_label:
-                        new_D[a, b] = 0
-                    else:
-                        old_idx = labels.index(new_labels[b])
-                        new_D[a, b] = new_row[old_idx if old_idx < max(i, j) else old_idx - 1]
-                elif new_labels[b] == new_label:
-                    old_idx = labels.index(new_labels[a])
-                    new_D[a, b] = new_row[old_idx if old_idx < max(i, j) else old_idx - 1]
-                else:
-                    old_a = labels.index(new_labels[a])
-                    old_b = labels.index(new_labels[b])
-                    new_D[a, b] = D[old_a, old_b]
+        D = D2
 
-        D = new_D
-        labels = new_labels
+    # Final join: two labels left
+    a, b = list(D.keys())
 
-    # Final join
-    a, b = labels
     root = TreeNode("ROOT", {"cell_id": "ROOT"})
-    muts_a = get_branch_mutations(row_map[a], row_map[b])
-    muts_b = get_branch_mutations(row_map[b], row_map[a])
+
+    parent_stub = {
+    "VDJ_sequence_H": "",
+    "VDJ_aa_sequence_H": "",
+    "VDJ_sequence_L": "",
+    "VDJ_aa_sequence_L": "",
+    }
+
+    muts_a = get_branch_mutations(parent_stub, row_map[a])
+    muts_b = get_branch_mutations(parent_stub, row_map[b])
+
     root.children.append((nodes[a], muts_a))
     root.children.append((nodes[b], muts_b))
     nodes[a].parent = root
     nodes[b].parent = root
 
     return root
+
 
 
 def _collect_mutations(node, records):
@@ -132,11 +180,11 @@ def _collect_mutations(node, records):
 
 
 def _gather_nodes(root):
-    nodes = []
+    out = []
     stack = [root]
     while stack:
         n = stack.pop()
-        nodes.append(n)
+        out.append(n)
         for c, _ in n.children:
             stack.append(c)
-    return nodes
+    return out
