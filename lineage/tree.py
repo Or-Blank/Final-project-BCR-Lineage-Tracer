@@ -55,11 +55,10 @@ def build_tree(clone_df: pd.DataFrame, germline: dict) -> tuple:
     rows = [germline] + clone_df.to_dict(orient="records")
 
     # Deduplicate by VDJ_sequence_H + VDJ_sequence_L
-    # (cells with identical sequences are merged, keeping first occurrence)
     seen = {}
     unique_rows = []
     for r in rows:
-        key = r["VDJ_sequence_H"] + "|" + r["VDJ_sequence_L"]
+        key = str(r["VDJ_sequence_H"]) + "|" + str(r.get("VDJ_sequence_L", ""))
         if key not in seen:
             seen[key] = r
             unique_rows.append(r)
@@ -87,16 +86,14 @@ def _upgma(matrix: np.ndarray, cell_ids: list, nodes: dict, rows: list) -> TreeN
     The germline node (cell_id == 'GERMLINE') is pinned as the root.
     """
     n = len(cell_ids)
-    active = list(range(n))              # indices still in the pool
-    id_map = {i: cell_ids[i] for i in range(n)}   # index → cell_id
-    row_map = {i: rows[i] for i in range(n)}       # index → sequence dict
+    active = list(range(n))
+    id_map = {i: cell_ids[i] for i in range(n)}
+    row_map = {i: rows[i] for i in range(n)}
     cluster_size = {i: 1 for i in range(n)}
     dist = matrix.copy()
 
-    germline_idx = next((i for i, cid in id_map.items() if cid == "GERMLINE"), 0)
-
     while len(active) > 1:
-        # Find closest pair (excluding same index)
+        # Find closest pair
         min_d = np.inf
         pair = (0, 1)
         for i in range(len(active)):
@@ -107,8 +104,7 @@ def _upgma(matrix: np.ndarray, cell_ids: list, nodes: dict, rows: list) -> TreeN
                     pair = (ii, jj)
 
         i, j = pair
-        # Merge j into i: create an edge from the more germline-like to the other
-        # The node with lower mu_total is the "parent"
+        # The node with lower mu_total is the parent
         mu_i = row_map[i].get("mu_count_h", 0) + row_map[i].get("mu_count_l", 0)
         mu_j = row_map[j].get("mu_count_h", 0) + row_map[j].get("mu_count_l", 0)
 
@@ -146,7 +142,7 @@ def _upgma(matrix: np.ndarray, cell_ids: list, nodes: dict, rows: list) -> TreeN
     root_id  = id_map[root_idx]
     root     = nodes[root_id]
 
-    # If germline is not already root, re-root toward it
+    # Re-root toward germline if needed
     germline_node = nodes.get("GERMLINE")
     if germline_node and root_id != "GERMLINE":
         root = _reroot(root, germline_node)
@@ -155,21 +151,15 @@ def _upgma(matrix: np.ndarray, cell_ids: list, nodes: dict, rows: list) -> TreeN
 
 
 def _reroot(current_root: TreeNode, target: TreeNode) -> TreeNode:
-    """
-    Simple re-rooting: make 'target' the new root by reversing parent/child
-    relationships along the path from current_root to target.
-    """
+    """Make 'target' the new root by reversing edges along the path."""
     path = _find_path(current_root, target)
     if not path:
         return current_root
 
-    # Reverse edges along the path
     for i in range(len(path) - 1):
         parent = path[i]
         child  = path[i + 1]
-        # Remove child from parent's children
         parent.children = [(c, m) for c, m in parent.children if c.node_id != child.node_id]
-        # Add parent as child of child
         muts = get_branch_mutations(child.cell_data, parent.cell_data)
         child.children.append((parent, muts))
         parent.parent = child
@@ -179,7 +169,7 @@ def _reroot(current_root: TreeNode, target: TreeNode) -> TreeNode:
 
 
 def _find_path(root: TreeNode, target: TreeNode) -> list:
-    """DFS to find path from root to target. Returns list of nodes."""
+    """DFS to find path from root to target."""
     if root.node_id == target.node_id:
         return [root]
     for child, _ in root.children:
