@@ -26,7 +26,7 @@ _PALETTE = [
     "#B5179E", "#560BAD", "#480CA8", "#3F37C9", "#4895EF",
 ]
 
-# Node circle radius (smaller than before)
+# Node circle radius
 NODE_RADIUS = 0.10
 
 
@@ -84,24 +84,27 @@ def _draw_tree(ax, node: TreeNode, positions: dict, color_map: dict):
 
         _draw_tree(ax, child, positions, color_map)
 
-    # ── Node circle (small, crisp) ──
+    # Node circle
     cell_type = node.cell_data.get("cluster_annotated", "")
     color = _get_color(cell_type, color_map)
     circle = plt.Circle((x, y), NODE_RADIUS, color=color, zorder=3,
-                         linewidth=0.8, edgecolor="white")
+                        linewidth=0.8, edgecolor="white")
     ax.add_patch(circle)
 
-    # ── Label to the RIGHT of the dot ──
+    # Duplicate count marker (if present)
+    dup_count = node.cell_data.get("duplicate_count", 1)
+    if dup_count and dup_count > 1:
+        ax.text(x, y - NODE_RADIUS - 0.05, f"{dup_count}",
+                fontsize=4.5, ha="center", va="top", color="#000000")
+
+    # Label to the right
     mu_h  = node.cell_data.get("mu_count_h", 0)
     mu_l  = node.cell_data.get("mu_count_l", 0)
     ct    = str(cell_type)[:14] if cell_type and str(cell_type) not in ("nan", "") else ""
     iso   = str(node.cell_data.get("c_call", ""))
 
-    # Build the per-node mutation label (aa changes on the branch FROM parent)
-    # These are stored on the child node for display purposes
     branch_label = node.cell_data.get("_branch_label", "")
 
-    # Compose multi-line label
     lines = []
     if ct:
         lines.append(ct)
@@ -119,9 +122,8 @@ def _draw_tree(ax, node: TreeNode, positions: dict, color_map: dict):
 
 def _attach_branch_labels(node: TreeNode):
     """
-    Walk the tree and store the mutation label for each branch
-    directly on the child node's cell_data under '_branch_label',
-    so _draw_tree can access it when drawing the node.
+    Store the mutation label for each branch on the child node's cell_data
+    under '_branch_label', so _draw_tree can access it.
     """
     for child, muts in node.children:
         label = mutations_to_label(muts, max_show=4)
@@ -141,7 +143,7 @@ def render_tree(root: TreeNode, output_path: str, clone_id: str = ""):
     """
     color_map = _build_color_map(root)
 
-    # Attach branch mutation labels to each child node before drawing
+    # Attach branch mutation labels
     root.cell_data["_branch_label"] = ""   # germline has no incoming branch
     _attach_branch_labels(root)
 
@@ -162,13 +164,13 @@ def render_tree(root: TreeNode, output_path: str, clone_id: str = ""):
     ax.set_ylim(min(all_y) - 0.8, max(all_y) + 0.8)
     ax.axis("off")
 
-    # ── Legend: cell type colors ──
+    # Legend: cell type colors
     legend_patches = [
         mpatches.Patch(color=color, label=ct)
         for ct, color in sorted(color_map.items())
     ]
 
-    # ── Notation legend (below cell type legend) ──
+    # Notation legend
     notation_lines = [
         "─── Notation ───",
         "H:XnY  mutation in Heavy chain",
@@ -176,6 +178,7 @@ def render_tree(root: TreeNode, output_path: str, clone_id: str = ""):
         "  X = original AA,  n = position",
         "  Y = new AA",
         "SHM  somatic hypermutation count",
+        "duplicate_count  number of identical sequences",
     ]
     notation_text = "\n".join(notation_lines)
 
@@ -190,7 +193,6 @@ def render_tree(root: TreeNode, output_path: str, clone_id: str = ""):
     )
     ax.add_artist(cell_type_legend)
 
-    # Add notation box below the legend using a text box
     ax.text(
         1.01, 0.02, notation_text,
         transform=ax.transAxes,
