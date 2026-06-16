@@ -27,7 +27,7 @@ I developed this Python script to construct BCR clonal lineage trees based on th
 
 ### Input:
 The tool will take an **input of tabular data in .xlsx**  with one row per cell.
-Column order does not matter. The tool matches columns by name (case-insensitive) and also recognises common aliases automatically.
+**Column order does not matter**. The tool matches columns by name (case-insensitive) and also recognises common aliases automatically.
 #### *The columns:*
 #### Required columns
 
@@ -61,12 +61,12 @@ Column order does not matter. The tool matches columns by name (case-insensitive
 * I decided to start with processed files rather than raw data because raw scBCR‑seq output typically comes in complex bioinformatics formats, and handling it can easily become a full project on its own. For this project, I prefered to focus on the downstream biology (lineage relationships, somatic hypermutation patterns, and class-switch recombination), rather than re-implementing well known upstream steps.
 
 ### Output:
-**The final output will be a structured folder with the image of the tree and table files.**
+The outputs are written to a single folder (default: `bcr_lineage_output/`).
 
-| Output | Format | Description |
+| File | Format | Description |
 |---|---|---|
-| Lineage tree | PNG/JPG | Phylogenetic tree with nodes colored by cell type or isotype and edges or notes to sign mutations |
-| Mutation table | xlsx/CSV | List of nucleotide and amino acid changes |
+| `tree_<clone_id>.png` | PNG | Phylogenetic tree for each clone |
+| `mutation_table.xlsx` | Excel | The mutation events, isotypes, cell type and more across all processed clones |
 
 Example of the tree structure:
 
@@ -147,14 +147,6 @@ The tool tries a list of recognised aliases for each role, so many non-standard 
 
 ---
 
-## Output
-
-All outputs are written to a single folder (default: `bcr_lineage_output/`).
-
-| File | Format | Description |
-|---|---|---|
-| `tree_<clone_id>.png` | PNG | Phylogenetic tree for each clone |
-| `mutation_table.xlsx` | Excel | Per-edge mutation events across all processed clones |
 
 ### Tree image
 
