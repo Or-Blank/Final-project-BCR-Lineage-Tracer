@@ -59,6 +59,8 @@ The tool will take an **input of tabular data in .xlsx**  with one row per cell.
 | `mu_count_h` / `mu_count_l` | Somatic hypermutation counts |
 
 * I decided to start with processed files rather than raw data because raw scBCR‑seq output typically comes in complex bioinformatics formats, and handling it can easily become a full project on its own. For this project, I prefered to focus on the downstream biology (lineage relationships, somatic hypermutation patterns, and class-switch recombination), rather than re-implementing well known upstream steps.
+  
+* The tool tries a list of recognised aliases for each role, so many non-standard column names are detected automatically.
 
 ### Output:
 The outputs are written to a single folder (default: `bcr_lineage_output/`).
@@ -71,6 +73,30 @@ The outputs are written to a single folder (default: `bcr_lineage_output/`).
 Example of the tree structure:
 
 <img width="425" height="650" alt="image" src="https://github.com/user-attachments/assets/752dfbb7-862a-4431-87c5-cc24752ede08" />
+
+### *The Tree:*
+
+### *Mutation table:*
+
+| Column | Description |
+|---|---|
+| `clone_id` | Clone this edge belongs to |
+| `node` | Original cell ID or internal node name |
+| `seq_label` | Short label as shown on the tree (`seq1`, `anc2`, …) |
+| `parent` | Parent node name |
+| `is_observed` | `True` for real cells, `False` for inferred ancestral nodes |
+| `isotype` | Isotype of the child node |
+| `sample_id` | Tissue of origin if the information is available |
+| `cluster_annotated` | Cell-type annotation |
+| `branch_length` | Hamming distance to parent |
+| `number_nucleotides_changes` | Number of nucleotide changes on this edge |
+| `nucleotides_changes` | Changes list e.g. `A42T;C81G` |
+| `number_amino_acid_changes` | Number of amino acid changes |
+| `amino_acid_changes` | Changes list e.g. `K14R` |
+
+
+
+
 
 
 
@@ -130,52 +156,14 @@ You can view the course main repository here: https://github.com/Code-Maven/wis-
 
 
 
-### Column naming flexibility
-
-The tool tries a list of recognised aliases for each role, so many non-standard column names are detected automatically. Examples:
-
-| Role | Also recognised as |
-|---|---|
-| `clone_id` | `clonotype`, `clonotype_id`, `lineage_id` |
-| `VDJ_sequence_H` | `sequence_alignment`, `heavy_sequence`, `sequence_alignment_H` |
-| `c_call` | `isotype`, `ig_class`, `heavy_isotype` |
-| `sample_id` | `Sample`, `tissue`, `organ`, `tissue_origin` |
-| `cluster_annotated` | `annot_clusters`, `cell_type`, `leiden`, `seurat_clusters` |
-| `cell_id` | `barcode`, `sequence_id` |
-
-> **IMGT-gapped sequences** (dots `.` and dashes `-` in IMGT coordinate space) are stripped automatically before any computation — no manual cleaning needed.
-
----
 
 
-### Tree image
 
-- Nodes are labelled **seq1, seq2, seq3 …** (observed cells, top-to-bottom) and **anc1, anc2 …** (inferred ancestral nodes).
-- Node **colour** encodes isotype (`c_call`) for paired H+L datasets, or tissue of origin (`sample_id`) for heavy-only datasets.
-- Node **shape** encodes cell-type annotation (`cluster_annotated`).
-- The **germline root** is always drawn as a large black square labelled "Germline".
-- The x-axis shows **cumulative mutation distance from the germline** with numeric tick marks.
-- No bounding frame — leaf labels extend freely to the right.
 
-### Mutation table
 
-One row per tree edge (parent → child). Columns:
 
-| Column | Description |
-|---|---|
-| `clone_id` | Clone this edge belongs to |
-| `node` | Original cell ID or internal node name |
-| `seq_label` | Short label as shown on the tree (`seq1`, `anc2`, …) |
-| `parent` | Parent node name |
-| `is_observed` | `True` for real cells, `False` for inferred ancestral nodes |
-| `isotype` | Isotype of the child node |
-| `sample_id` | Tissue of origin |
-| `cluster_annotated` | Cell-type annotation |
-| `branch_length` | Hamming distance to parent |
-| `n_nt` | Number of nucleotide changes on this edge |
-| `nt_changes` | Semicolon-separated list e.g. `A42T;C81G` |
-| `n_aa` | Number of amino acid changes |
-| `aa_changes` | Semicolon-separated list e.g. `K14R` |
+
+
 
 ---
 
