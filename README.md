@@ -29,20 +29,20 @@ I developed this Python script to construct BCR clonal lineage trees based on th
 The tool will take an **input of tabular data in .xlsx**  with one row per cell.
 Column order does not matter. The tool matches columns by name (case-insensitive) and also recognises common aliases automatically.
 #### *The columns:*
-### Required columns
+#### Required columns
 
 | Column | Description |
 |---|---|
 | `clone_id` | Clone group identifier |
 | `VDJ_sequence_H` | Heavy chain VDJ nucleotide sequence |
 
-### Strongly recommended
+#### Strongly recommended
 
 | Column | Description | What happens if absent |
 |---|---|---|
 | `germline_alignment_d_mask` | IMGT-masked germline reference sequence | A per-clone consensus is estimated from the observed sequences (less accurate) |
 
-### Optional — tree still builds; missing fields show as `Unknown`
+#### Optional — tree still builds; missing fields show as `Unknown`
 
 | Column | Description |
 |---|---|
