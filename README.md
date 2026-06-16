@@ -28,7 +28,7 @@ I developed this Python script to construct BCR clonal lineage trees based on th
 ### Input:
 The tool will take an **input of tabular data in .xlsx**  with one row per cell.
 Column order does not matter. The tool matches columns by name (case-insensitive) and also recognises common aliases automatically.
-### *The columns:*
+#### *The columns:*
 ### Required columns
 
 | Column | Description |
