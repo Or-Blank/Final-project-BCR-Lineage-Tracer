@@ -22,6 +22,9 @@ As part of this process, the cells accumulate somatic hypermutations (SHM) in th
 
 
 ## The tool: ##
+### How is it working:
+I developed this Python script to construct BCR clonal lineage trees based on the fundamental principle of clonal evolution. The tool maps the evolutionary "family history" of B cell clones by rooting each tree in its unmutated common ancestor (germline)—representing the cell’s original state before it encountered an antigen. As these B cells divide during an immune response, they accumulate unique genetic changes through the SHM process. By analyzing the hierarchy of shared mutations, the script reconstructs the branching order of the cells, where the length of each branch reflects the number of genetic changes acquired over time. To ensure high-fidelity results, the code incorporates critical biological constraints such as isotype switching (the irreversible transition between antibody types) and tissue connectivity, allowing for a professional visualization of how immune lineages mature and spread throughout different organs.
+
 ### Input:
 The tool will take an **input of tabular data in .xlsx /.csv /.tsv**  with one row per cell.
 The required columns will be:
@@ -103,6 +106,7 @@ pytest tests/
 This project is part of the Python Programming Course at the Weizmann Institute of Science.
 
 You can view the course main repository here: https://github.com/Code-Maven/wis-python-course-2026-03
+
 
 
 
