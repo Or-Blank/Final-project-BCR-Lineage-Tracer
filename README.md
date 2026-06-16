@@ -107,7 +107,10 @@ This project is part of the Python Programming Course at the Weizmann Institute 
 
 You can view the course main repository here: https://github.com/Code-Maven/wis-python-course-2026-03
 
-
+### Sources I used to create the tree script:
+* https://mixcr.com/mixcr/guides/b-cell-lineages-webinar/
+* https://www.antibodysociety.org/wordpress/wp-content/uploads/2021/11/Immcantation-webinar-slides.pdf
+* Weber, Leah L., et al. "Isotype-aware inference of B cell clonal lineage trees from single-cell sequencing data." Cell Genomics 4.9 (2024).‏
 
 
 
