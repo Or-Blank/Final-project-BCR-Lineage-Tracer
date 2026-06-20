@@ -1,8 +1,6 @@
-pandas
-openpyxl
 biopython
 matplotlib
-scipy
 numpy
-Pillow
+openpyxl
+pandas
 pytest
